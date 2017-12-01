@@ -64,4 +64,64 @@ defmodule Ideas.MeetupTest do
       assert %Ecto.Changeset{} = Meetup.change_idea(idea)
     end
   end
+
+  describe "sessions" do
+    alias Ideas.Meetup.Session
+
+    @valid_attrs %{name: "some name"}
+    @update_attrs %{name: "some updated name"}
+    @invalid_attrs %{name: nil}
+
+    def session_fixture(attrs \\ %{}) do
+      {:ok, session} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Meetup.create_session()
+
+      session
+    end
+
+    test "list_sessions/0 returns all sessions" do
+      session = session_fixture()
+      assert Meetup.list_sessions() == [session]
+    end
+
+    test "get_session!/1 returns the session with given id" do
+      session = session_fixture()
+      assert Meetup.get_session!(session.id) == session
+    end
+
+    test "create_session/1 with valid data creates a session" do
+      assert {:ok, %Session{} = session} = Meetup.create_session(@valid_attrs)
+      assert session.name == "some name"
+    end
+
+    test "create_session/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Meetup.create_session(@invalid_attrs)
+    end
+
+    test "update_session/2 with valid data updates the session" do
+      session = session_fixture()
+      assert {:ok, session} = Meetup.update_session(session, @update_attrs)
+      assert %Session{} = session
+      assert session.name == "some updated name"
+    end
+
+    test "update_session/2 with invalid data returns error changeset" do
+      session = session_fixture()
+      assert {:error, %Ecto.Changeset{}} = Meetup.update_session(session, @invalid_attrs)
+      assert session == Meetup.get_session!(session.id)
+    end
+
+    test "delete_session/1 deletes the session" do
+      session = session_fixture()
+      assert {:ok, %Session{}} = Meetup.delete_session(session)
+      assert_raise Ecto.NoResultsError, fn -> Meetup.get_session!(session.id) end
+    end
+
+    test "change_session/1 returns a session changeset" do
+      session = session_fixture()
+      assert %Ecto.Changeset{} = Meetup.change_session(session)
+    end
+  end
 end

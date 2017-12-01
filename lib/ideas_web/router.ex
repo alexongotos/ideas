@@ -16,6 +16,7 @@ defmodule IdeasWeb.Router do
   scope "/", IdeasWeb do
     pipe_through :browser # Use the default browser stack
     resources "/", IdeaController
+    resources "/sessions", SessionController
   end
 
   # Other scopes may use custom stacks.
