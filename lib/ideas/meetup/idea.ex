@@ -2,11 +2,14 @@ defmodule Ideas.Meetup.Idea do
   use Ecto.Schema
   import Ecto.Changeset
   alias Ideas.Meetup.Idea
+  alias Ideas.Meetup.Point
 
 
   schema "ideas" do
     field :description, :string
     field :title, :string
+
+    has_many :points, Point
 
     timestamps()
   end

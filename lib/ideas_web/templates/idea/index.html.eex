@@ -8,7 +8,7 @@
 
 <div class="row marketing">
   <div class="col-lg-6">
-    <h4>Ideas</h4>
+    <h4>Listing Ideas</h4>
     <ul>
     <%= for idea <- @ideas do %>
       <li><%= link idea.title, to: idea_path(@conn, :show, idea) %></li>
