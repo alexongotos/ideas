@@ -7,6 +7,8 @@ defmodule Ideas.Meetup do
   alias Ideas.Repo
 
   alias Ideas.Meetup.Idea
+  alias Ideas.Meetup.Session
+  alias Ideas.Meetup.Point
 
   @doc """
   Returns the list of ideas.
@@ -102,8 +104,6 @@ defmodule Ideas.Meetup do
     Idea.changeset(idea, %{})
   end
 
-  alias Ideas.Meetup.Session
-
   @doc """
   Returns the list of sessions.
 
@@ -196,5 +196,36 @@ defmodule Ideas.Meetup do
   """
   def change_session(%Session{} = session) do
     Session.changeset(session, %{})
+  end
+
+  @doc """
+  Creates a point.
+
+  ## Examples
+
+      iex> create_point(%{field: value})
+      {:ok, %Point{}}
+
+      iex> create_point(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_point(attrs \\ %{}) do
+    %Point{}
+    |> Point.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Returns the list of points.
+
+  ## Examples
+
+      iex> list_points()
+      [%Point{}, ...]
+
+  """
+  def list_points do
+    Repo.all(Point)
   end
 end

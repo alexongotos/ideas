@@ -124,4 +124,32 @@ defmodule Ideas.MeetupTest do
       assert %Ecto.Changeset{} = Meetup.change_session(session)
     end
   end
+
+  describe "points" do
+    alias Ideas.Meetup.Point
+    
+    @valid_attrs %{score: 1}
+    @update_attrs %{score: 2}
+    @invalid_attrs %{score: nil}
+
+    def point_fixture(attrs \\ %{}) do
+      idea = Meetup.create_idea(%{description: "some description", title: "some title"})
+      session = Meetup.create_session(%{name: "some name"})
+
+      {:ok, point} =
+        attrs
+        |> Enum.into(%{idea: idea, session: session})
+        |> Enum.into(@valid_attrs)
+        |> Meetup.create_point()
+
+      point
+    end
+
+    test "list_points/0 returns all points" do
+      point = point_fixture()
+      assert Meetup.list_points() == [point]
+    end
+  end
+
+
 end
