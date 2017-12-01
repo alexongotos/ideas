@@ -5,8 +5,9 @@ defmodule IdeasWeb.IdeaController do
   alias Ideas.Meetup.Idea
 
   def index(conn, _params) do
+    new_idea = Meetup.change_idea(%Idea{})
     ideas = Meetup.list_ideas()
-    render(conn, "index.html", ideas: ideas)
+    render(conn, "index.html", [ideas: ideas, changeset: new_idea])
   end
 
   def new(conn, _params) do
