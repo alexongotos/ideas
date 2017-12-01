@@ -20,7 +20,41 @@ defmodule Ideas.Meetup do
 
   """
   def list_ideas do
-    Repo.all(Idea)
+    # q1 = from votes in Vote,
+    #      group_by: votes.request_id,
+    #      select: %{request_id: votes.request_id, total_rating: sum(votes.rating)}
+    #
+    # q2 = from request in Request,
+    #      left_join: song in assoc(request, :song),
+    #      left_join: rating in subquery(q2), on: request.id == rating.request_id,
+    #      where: request.zone_id == ^zone_id and request.times_played <= ^max_played,
+    #      select: %{title: song.title, url: song.url, thumbnail: song.thumbnail, rating: rating.total_rating},
+    #      order_by:  [asc: request.times_played, desc: request.inserted_at]
+
+    q1 =
+      from(
+        points in Point,
+        group_by: points.idea_id,
+        select: %{idea_id: points.idea_id, total_score: sum(points.score)}
+      )
+
+    q2 =
+      from(
+        idea in Idea,
+        left_join: point in subquery(q1),
+        on: idea.id == point.idea_id,
+        select: %Idea{
+          id: idea.id,
+          title: idea.title,
+          description: idea.description,
+          score: point.total_score,
+          inserted_at: idea.inserted_at,
+          updated_at: idea.updated_at
+        },
+        order_by: [asc: point.total_score]
+      )
+
+    Repo.all(q2) |> Repo.preload(:points)
   end
 
   @doc """
@@ -226,6 +260,70 @@ defmodule Ideas.Meetup do
 
   """
   def list_points do
-    Repo.all(Point)
+    Repo.all(Point) |> Repo.preload([:idea, :session])
+  end
+
+  @doc """
+  Gets a single point.
+
+  Raises `Ecto.NoResultsError` if the Point does not exist.
+
+  ## Examples
+
+      iex> get_point!(123)
+      %Point{}
+
+      iex> get_point!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_point!(id), do: Repo.get!(Point, id) |> Repo.preload([:idea, :session])
+
+  @doc """
+  Deletes a Point.
+
+  ## Examples
+
+      iex> delete_point(point)
+      {:ok, %Point{}}
+
+      iex> delete_point(point)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_point(%Point{} = point) do
+    Repo.delete(point)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking point changes.
+
+  ## Examples
+
+      iex> change_point(point)
+      %Ecto.Changeset{source: %Point{}}
+
+  """
+  def change_point(%Point{} = point) do
+    Point.changeset(point, %{})
+  end
+
+  @doc """
+  Updates a point.
+
+  ## Examples
+
+      iex> update_point(point, %{field: new_value})
+      {:ok, %Point{}}
+
+      iex> update_point(point, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_point(%Point{} = point, attrs) do
+    point
+    |> Point.changeset(attrs)
+    |> IO.inspect(label: "Update Point: ")
+    |> Repo.update()
   end
 end

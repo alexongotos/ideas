@@ -1,0 +1,5 @@
+<h2>New Point</h2>
+
+<%= render "form.html", Map.put(assigns, :action, point_path(@conn, :create)) %>
+
+<span><%= link "Back", to: point_path(@conn, :index) %></span>

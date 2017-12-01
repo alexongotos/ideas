@@ -4,12 +4,12 @@ defmodule Ideas.Meetup.Idea do
   alias Ideas.Meetup.Idea
   alias Ideas.Meetup.Point
 
-
   schema "ideas" do
-    field :description, :string
-    field :title, :string
+    field(:description, :string)
+    field(:title, :string)
+    field(:score, :integer, virtual: true)
 
-    has_many :points, Point
+    has_many(:points, Point)
 
     timestamps()
   end

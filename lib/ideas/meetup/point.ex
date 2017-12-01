@@ -6,12 +6,12 @@ defmodule Ideas.Meetup.Point do
   alias Ideas.Meetup.Idea
 
   schema "points" do
-    field :score, :integer
+    field(:score, :integer)
     # field :session_id, :id
     # field :idea_id, :id
 
-    belongs_to :session, Session
-    belongs_to :idea, Idea
+    belongs_to(:session, Session)
+    belongs_to(:idea, Idea)
 
     timestamps()
   end
@@ -19,7 +19,7 @@ defmodule Ideas.Meetup.Point do
   @doc false
   def changeset(%Point{} = point, attrs) do
     point
-    |> cast(attrs, [:score])
-    |> validate_required([:score])
+    |> cast(attrs, [:score, :session_id, :idea_id])
+    |> validate_required([:score, :session_id, :idea_id])
   end
 end

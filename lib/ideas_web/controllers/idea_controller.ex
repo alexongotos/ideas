@@ -3,11 +3,24 @@ defmodule IdeasWeb.IdeaController do
 
   alias Ideas.Meetup
   alias Ideas.Meetup.Idea
+  alias Ideas.Meetup.Session
+  alias Ideas.Meetup.Point
 
   def index(conn, _params) do
     new_idea = Meetup.change_idea(%Idea{})
-    ideas = Meetup.list_ideas()
-    render(conn, "index.html", [ideas: ideas, changeset: new_idea])
+
+    ideas =
+      Meetup.list_ideas()
+      |> Enum.map(fn idea ->
+           {idea, Meetup.change_point(%Point{session: %Session{}, idea: idea})}
+         end)
+
+    render(
+      conn,
+      "index.html",
+      ideas: ideas,
+      changeset: new_idea
+    )
   end
 
   def new(conn, _params) do
@@ -21,6 +34,7 @@ defmodule IdeasWeb.IdeaController do
         conn
         |> put_flash(:info, "Idea created successfully.")
         |> redirect(to: idea_path(conn, :show, idea))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -45,6 +59,7 @@ defmodule IdeasWeb.IdeaController do
         conn
         |> put_flash(:info, "Idea updated successfully.")
         |> redirect(to: idea_path(conn, :show, idea))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", idea: idea, changeset: changeset)
     end

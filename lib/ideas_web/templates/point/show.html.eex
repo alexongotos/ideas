@@ -1,0 +1,21 @@
+<h2>Show Point</h2>
+
+<ul>
+
+  <li>
+    <strong>Idea:</strong>
+    <%= @point.idea.title %>
+  </li>
+  <li>
+    <strong>Session:</strong>
+    <%= @point.session.name %>
+  </li>
+  <li>
+    <strong>Score:</strong>
+    <%= @point.score %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: point_path(@conn, :edit, @point) %></span>
+<span><%= link "Back", to: point_path(@conn, :index) %></span>
