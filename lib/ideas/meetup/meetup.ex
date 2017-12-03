@@ -20,6 +20,19 @@ defmodule Ideas.Meetup do
 
   """
   def list_ideas do
+    Repo.all(Idea)
+  end
+
+  @doc """
+  Returns the list of ideas by total score in descending order.
+
+  ## Examples
+
+      iex> list_ideas()
+      [%Idea{}, ...]
+
+  """
+  def list_ideas_by_score do
     # q1 = from votes in Vote,
     #      group_by: votes.request_id,
     #      select: %{request_id: votes.request_id, total_rating: sum(votes.rating)}
@@ -47,9 +60,9 @@ defmodule Ideas.Meetup do
           id: idea.id,
           title: idea.title,
           description: idea.description,
-          score: point.total_score,
           inserted_at: idea.inserted_at,
-          updated_at: idea.updated_at
+          updated_at: idea.updated_at,
+          score: point.total_score
         },
         order_by: [asc: point.total_score]
       )
@@ -166,6 +179,22 @@ defmodule Ideas.Meetup do
 
   """
   def get_session!(id), do: Repo.get!(Session, id)
+
+  @doc """
+  Gets a single session.
+
+  Returns nil if the Session does not exist.
+
+  ## Examples
+
+      iex> get_session(123)
+      %Session{}
+
+      iex> get_session!(456)
+      nil
+
+  """
+  def get_session(id), do: Repo.get(Session, id)
 
   @doc """
   Creates a session.
@@ -323,7 +352,6 @@ defmodule Ideas.Meetup do
   def update_point(%Point{} = point, attrs) do
     point
     |> Point.changeset(attrs)
-    |> IO.inspect(label: "Update Point: ")
     |> Repo.update()
   end
 end

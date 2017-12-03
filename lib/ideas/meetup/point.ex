@@ -1,4 +1,8 @@
 defmodule Ideas.Meetup.Point do
+  @moduledoc """
+  The Point schema.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Ideas.Meetup.Point
@@ -20,6 +24,7 @@ defmodule Ideas.Meetup.Point do
   def changeset(%Point{} = point, attrs) do
     point
     |> cast(attrs, [:score, :session_id, :idea_id])
+    |> unique_constraint(:one_vote_per_idea, name: :points_session_id_idea_id_index)
     |> validate_required([:score, :session_id, :idea_id])
   end
 end

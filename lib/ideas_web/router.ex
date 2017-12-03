@@ -13,12 +13,18 @@ defmodule IdeasWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :authenticated do
+    plug(IdeasWeb.SessionCookiePlug)
+  end
+
   scope "/", IdeasWeb do
     # Use the default browser stack
     pipe_through(:browser)
+    pipe_through(:authenticated)
 
     resources("/sessions", SessionController)
     resources("/points", PointController)
+    resources("/ideas", IdeaController)
     resources("/", IdeaController)
   end
 

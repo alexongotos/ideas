@@ -6,14 +6,16 @@ defmodule IdeasWeb.PointController do
 
   def index(conn, _params) do
     points = Meetup.list_points()
+
     render(conn, "index.html", points: points)
   end
 
   def new(conn, _params) do
     ideas = Meetup.list_ideas() |> Enum.map(fn i -> {i.title, i.id} end)
-    sessions = Meetup.list_sessions() |> Enum.map(fn s -> {s.name, s.id} end)
+    session = conn.assigns[:session]
     changeset = Meetup.change_point(%Point{})
-    render(conn, "new.html", changeset: changeset, ideas: ideas, sessions: sessions)
+
+    render(conn, "new.html", changeset: changeset, ideas: ideas, session_id: session.id)
   end
 
   def create(conn, %{"point" => point_params}) do
@@ -24,18 +26,22 @@ defmodule IdeasWeb.PointController do
         |> redirect(to: point_path(conn, :show, point))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        ideas = Meetup.list_ideas() |> Enum.map(fn i -> {i.title, i.id} end)
+        session = conn.assigns[:session]
+
+        render(conn, "new.html", changeset: changeset, ideas: ideas, session_id: session.id)
     end
   end
 
   def show(conn, %{"id" => id}) do
     point = Meetup.get_point!(id)
+
     render(conn, "show.html", point: point)
   end
 
   def edit(conn, %{"id" => id}) do
     ideas = Meetup.list_ideas() |> Enum.map(fn i -> {i.title, i.id} end)
-    sessions = Meetup.list_sessions() |> Enum.map(fn s -> {s.name, s.id} end)
+    session = conn.assigns[:session]
     point = Meetup.get_point!(id)
     changeset = Meetup.change_point(point)
 
@@ -45,12 +51,11 @@ defmodule IdeasWeb.PointController do
       point: point,
       changeset: changeset,
       ideas: ideas,
-      sessions: sessions
+      session_id: session.id
     )
   end
 
   def update(conn, %{"id" => id, "point" => point_params}) do
-    IO.puts("HERE ARE POINT PARAMS #{inspect(point_params)}")
     point = Meetup.get_point!(id)
 
     case Meetup.update_point(point, point_params) do
@@ -61,7 +66,7 @@ defmodule IdeasWeb.PointController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         ideas = Meetup.list_ideas() |> Enum.map(fn i -> {i.title, i.id} end)
-        sessions = Meetup.list_sessions() |> Enum.map(fn s -> {s.name, s.id} end)
+        session = conn.assigns[:session]
 
         render(
           conn,
@@ -69,7 +74,7 @@ defmodule IdeasWeb.PointController do
           point: point,
           changeset: changeset,
           ideas: ideas,
-          sessions: sessions
+          session_id: session.id
         )
     end
   end

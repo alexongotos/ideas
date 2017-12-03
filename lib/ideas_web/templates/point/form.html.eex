@@ -6,7 +6,7 @@
   <% end %>
 
   <%= select f, :idea_id, @ideas, prompt: "Choose your idea" %>
-  <%= select f, :session_id, @sessions, prompt: "Choose your session" %>
+  <%= hidden_input f, :session_id, value: @session_id %>
 
   <div class="form-group">
     <%= label f, :score, class: "control-label" %>
