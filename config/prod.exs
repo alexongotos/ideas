@@ -18,6 +18,10 @@ config :ideas, IdeasWeb.Endpoint,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :ideas, IdeasWeb.Endpoint,
+  server: true,
+  secret_key_base: "${SECRET_KEY_BASE}"
+
 # Do not print debug messages in production
 config :logger, level: :info
 
@@ -59,6 +63,9 @@ config :logger, level: :info
 #     config :ideas, IdeasWeb.Endpoint, server: true
 #
 
-# Finally import the config/prod.secret.exs
-# which should be versioned separately.
-import_config "prod.secret.exs"
+# ssl: true,
+config :ideas, Ideas.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  url: "${DATABASE_URL}",
+  database: "",
+  pool_size: 1
