@@ -18,3 +18,18 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+
+## nanobox
+
+Development
+```
+  nanobox dns add local phoenix.local
+  nanobox run mix do ecto.create, ecto.migrate
+  nanobox run mix phx.server
+```
+
+Production
+```
+  nanobox evar add dry-run PORT=8080
+  nanobox deploy dry-run
+```
