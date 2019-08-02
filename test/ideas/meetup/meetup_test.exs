@@ -127,7 +127,7 @@ defmodule Ideas.MeetupTest do
 
   describe "points" do
     alias Ideas.Meetup.Point
-    
+
     @valid_attrs %{score: 1}
     @update_attrs %{score: 2}
     @invalid_attrs %{score: nil}
@@ -150,6 +150,4 @@ defmodule Ideas.MeetupTest do
       assert Meetup.list_points() == [point]
     end
   end
-
-
 end
